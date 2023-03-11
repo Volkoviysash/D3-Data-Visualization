@@ -1,3 +1,9 @@
+document.addEventListener("DOMContentLoaded", handleData);
+
+window.addEventListener("resize", () => {
+  handleData();
+});
+
 async function getData() {
   return fetch(
     "https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/GDP-data.json"
@@ -19,8 +25,6 @@ async function handleData() {
     console.error("Error handle data");
   }
 }
-
-document.addEventListener("DOMContentLoaded", handleData);
 
 function displayData(dataset) {
   var rootDiv = d3.select(".data");
@@ -44,11 +48,13 @@ function displayData(dataset) {
     .domain([0, d3.max(dataset, (d) => d[1])])
     .range([h - padding, padding]);
 
-  const svg = d3
-    .select(".data")
+  // Remove any existing svg elements
+  rootDiv.selectAll("svg").remove();
+
+  const svg = rootDiv
     .append("svg")
-    .attr("width", w)
-    .attr("height", h);
+    .attr("viewBox", `0 0 ${w} ${h}`)
+    .attr("preserveAspectRatio", "xMidYMid meet");
 
   const tooltip = d3
     .select(".data")
@@ -94,20 +100,10 @@ function displayData(dataset) {
 }
 
 function calculateYear(data, elementIndex = 0) {
-  const regexYear = /^\d{4}/;
-  const regexQuart = /-(\d{2})-/;
-
-  const year = data[elementIndex][0].match(regexYear)[0];
-  const month = regexQuart.exec(data[elementIndex][0])[1];
-  const quarter = Math.ceil(month / 3);
-
-  return parseFloat(year) + quarter * 0.25;
-}
-
-function getStringData(data) {
-  const year = Math.floor(data);
-  const quarter = Math.ceil((data - year) * 4);
-
-  // Return the formatted string
-  return `Quarter ${quarter}, year ${year}`;
+  const dateStr = data[elementIndex][0];
+  const date = new Date(dateStr);
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const quarter = Math.floor(month / 3) + 1;
+  return year + quarter * 0.25;
 }
