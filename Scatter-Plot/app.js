@@ -42,15 +42,15 @@ function displayData(dataset) {
   const h = parseFloat(rootDiv.style("height"));
   const padding = 50;
 
-  const xMin = d3.min(dataset, (d) => getYear(d)) - 5;
-  const xMax = d3.max(dataset, (d) => getYear(d)) + 5;
+  const xMin = d3.min(dataset, (d) => getYear(d)) - 1;
+  const xMax = d3.max(dataset, (d) => getYear(d)) + 1;
   const xScale = d3
     .scaleLinear()
     .domain([xMin, xMax])
     .range([padding, w - padding]);
 
-  const yMin = d3.min(dataset, (d) => getTimeInSeconds(d)) - 20;
-  const yMax = d3.max(dataset, (d) => getTimeInSeconds(d)) + 20;
+  const yMin = d3.max(dataset, (d) => getTimeInSeconds(d)) + 5;
+  const yMax = d3.min(dataset, (d) => getTimeInSeconds(d)) - 5;
   const yScale = d3
     .scaleLinear()
     .domain([yMin, yMax])
